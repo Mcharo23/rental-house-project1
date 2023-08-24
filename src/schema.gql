@@ -3,28 +3,56 @@
 # ------------------------------------------------------
 
 input CreateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int!
+  accountType: String!
+  firstName: String!
+  gender: String!
+  lastname: String!
+  middleName: String!
+  password: String!
+  phoneNumber: String!
+  username: String!
+}
+
+type LoginResponse {
+  accessToken: String!
+  user: UserType!
+}
+
+input LoginUserInput {
+  password: String!
+  username: String!
 }
 
 type Mutation {
-  createUser(createUserInput: CreateUserInput!): User!
-  removeUser(id: Int!): User!
-  updateUser(updateUserInput: UpdateUserInput!): User!
+  createUser(createUserInput: CreateUserInput!): UserType!
+  login(loginUserInput: LoginUserInput!): LoginResponse!
+  removeUser(id: Int!): UserType!
+  updateUser(updateUserInput: UpdateUserInput!): UserType!
 }
 
 type Query {
-  user(id: Int!): User!
-  users: [User!]!
+  user(username: String!): UserType!
+  users: [UserType!]!
 }
 
 input UpdateUserInput {
-  """Example field (placeholder)"""
-  exampleField: Int
+  accountType: String
+  firstName: String
+  gender: String
   id: Int!
+  lastname: String
+  middleName: String
+  password: String
+  phoneNumber: String
+  username: String
 }
 
-type User {
-  """Example field (placeholder)"""
-  exampleField: Int!
+type UserType {
+  accountType: String!
+  firstName: String!
+  gender: String!
+  lastname: String!
+  middleName: String!
+  phoneNumber: String!
+  username: String!
 }
