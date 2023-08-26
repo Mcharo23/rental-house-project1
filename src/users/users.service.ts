@@ -21,6 +21,12 @@ export class UsersService {
   ) {}
 
   async create(createUserInput: CreateUserInput) {
+    const found = await this.findOne(createUserInput.username);
+
+    if (found) {
+      throw new ConflictException('The user already exist, please login');
+    }
+
     const salt = await bcrypt.genSalt();
 
     const user = await this.userModel.create({
@@ -29,12 +35,6 @@ export class UsersService {
       password: await this.hashPassword(createUserInput.password, salt),
       salt: salt,
     });
-
-    const found = await this.findOne(createUserInput.username);
-
-    if (found) {
-      throw new ConflictException('The user already exist, please login');
-    }
 
     this.logger.log(await user.save());
 
