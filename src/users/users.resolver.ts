@@ -1,9 +1,10 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { UserType } from './entities/user.type';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { NotFoundException } from '@nestjs/common';
+import { NotFoundException, UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 @Resolver(() => UserType)
 export class UsersResolver {
@@ -15,7 +16,9 @@ export class UsersResolver {
   }
 
   @Query(() => [UserType], { name: 'users' })
-  async findAll(): Promise<UserType[]> {
+  @UseGuards(JwtAuthGuard)
+  async findAll(@Context() context): Promise<UserType[]> {
+    console.log(context);
     return await this.usersService.findAll();
   }
 
@@ -26,7 +29,7 @@ export class UsersResolver {
     const user = await this.usersService.findOne(username);
 
     if (user) {
-      throw new NotFoundException('No active accoud found');
+      throw new NotFoundException('No active account found');
     }
     return user;
   }
