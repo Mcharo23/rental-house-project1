@@ -18,7 +18,7 @@ export class UsersResolver {
   @Query(() => [UserType], { name: 'users' })
   @UseGuards(JwtAuthGuard)
   async findAll(@Context() context): Promise<UserType[]> {
-    console.log(context);
+    console.log(context.req.user);
     return await this.usersService.findAll();
   }
 

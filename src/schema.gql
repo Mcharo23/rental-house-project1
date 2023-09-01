@@ -2,6 +2,15 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateHouseInput {
+  Description: String!
+  District: String!
+  Region: String!
+  Ward: String!
+  imgUrl: [String!]!
+  status: String!
+}
+
 input CreateUserInput {
   accountType: String!
   firstName: String!
@@ -11,6 +20,16 @@ input CreateUserInput {
   password: String!
   phoneNumber: String!
   username: String!
+}
+
+type HouseType {
+  Description: String!
+  District: String!
+  Region: String!
+  Ward: String!
+  imgUrl: [String!]!
+  status: String!
+  user: UserType!
 }
 
 type LoginResponse {
@@ -24,15 +43,31 @@ input LoginUserInput {
 }
 
 type Mutation {
+  createHouse(createHouseInput: CreateHouseInput!): HouseType!
   createUser(createUserInput: CreateUserInput!): UserType!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
+  updateHouse(updateHouseInput: UpdateHouseInput!): HouseType!
   updateUser(updateUserInput: UpdateUserInput!): UserType!
 }
 
 type Query {
+  house(id: Int!): HouseType!
+  houses: [HouseType!]!
+  myHouse: [HouseType!]!
   user(username: String!): UserType!
   users: [UserType!]!
+}
+
+input UpdateHouseInput {
+  Description: String
+  District: String
+  Region: String
+  Ward: String
+  id: Int!
+  imgUrl: [String!]
+  status: String
 }
 
 input UpdateUserInput {

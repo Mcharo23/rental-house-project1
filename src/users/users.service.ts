@@ -51,10 +51,18 @@ export class UsersService {
     return users;
   }
 
-  async findOne(username: string) {
+  async findOne(username: string): Promise<User> {
     const user = await this.userModel.findOne({ username: username }).exec();
 
     return user;
+  }
+
+  async getManyUsers(user: string[]): Promise<UserType[]> {
+    return await this.userModel.find({
+      where: {
+        _id: { $in: user } as any,
+      },
+    });
   }
 
   update(id: number, updateUserInput: UpdateUserInput) {

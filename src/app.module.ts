@@ -6,6 +6,7 @@ import { ApolloDriver, ApolloDriverConfig } from '@nestjs/apollo';
 import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
+import { HouseModule } from './house/house.module';
 
 @Module({
   imports: [
@@ -14,15 +15,16 @@ import { GraphQLError, GraphQLFormattedError } from 'graphql';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
-      formatError: (error: GraphQLError): GraphQLFormattedError => {
-        const formattedError: GraphQLFormattedError = {
-          message: error.extensions.originalError as string,
-        };
-        return formattedError;
-      },
+      // formatError: (error: GraphQLError): GraphQLFormattedError => {
+      //   const formattedError: GraphQLFormattedError = {
+      //     message: error.extensions.originalError as string,
+      //   };
+      //   return formattedError;
+      // },
     }),
     UsersModule,
     AuthModule,
+    HouseModule,
   ],
 })
 export class AppModule {}
