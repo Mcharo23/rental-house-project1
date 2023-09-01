@@ -3,6 +3,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateHouseInput } from './dto/create-house.input';
 import { UpdateHouseInput } from './dto/update-house.input';
@@ -17,21 +18,34 @@ export class HouseService {
   constructor(
     @InjectModel(House.name)
     private readonly houseModel: Model<House>,
+    @InjectModel(User.name)
+    private readonly userModel: Model<User>,
   ) {}
 
   async create(createHouseInput: CreateHouseInput, user: User): Promise<House> {
     try {
-      const newHouse = new this.houseModel({
-        _id: new Types.ObjectId(),
+      const houseId = new Types.ObjectId();
+
+      const found = await this.userModel.findOne({ username: user.username });
+
+      if (!found) {
+        throw new UnauthorizedException();
+      }
+
+      const house = new this.houseModel({
+        _id: houseId,
         ...createHouseInput,
         user: user,
       });
 
-      const savedHouse = await newHouse.save();
+      await house.save();
 
-      this.logger.log(savedHouse);
+      found.house.push(houseId);
+      await found.save();
 
-      return savedHouse;
+      this.logger.log(house._id);
+
+      return house;
     } catch (error) {
       this.logger.error(error.message);
       throw error;

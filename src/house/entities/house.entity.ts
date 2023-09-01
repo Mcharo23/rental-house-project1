@@ -13,6 +13,9 @@ export class HouseType {
   Ward: string;
 
   @Field()
+  price: number;
+
+  @Field()
   Description: string;
 
   @Field(() => UserType)

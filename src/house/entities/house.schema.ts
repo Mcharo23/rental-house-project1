@@ -16,19 +16,25 @@ export class House extends Document {
   Ward: string;
 
   @Prop()
+  price: number;
+
+  @Prop()
   Description: string;
 
   @Prop()
   status: string;
-
-  // @Prop({ type: Types.ObjectId, ref: 'User' })
-  // user: string[];
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
   user: Types.ObjectId;
 
   @Prop(() => [String])
   imgUrl: string[];
+
+  @Prop({ type: Date, default: Date.now })
+  createdAt: Date;
+
+  @Prop({ type: Date, default: Date.now })
+  updatedAt: Date;
 }
 
 export const HouseSchema = SchemaFactory.createForClass(House);

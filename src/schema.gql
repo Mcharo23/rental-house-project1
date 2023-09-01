@@ -8,6 +8,7 @@ input CreateHouseInput {
   Region: String!
   Ward: String!
   imgUrl: [String!]!
+  price: Float!
   status: String!
 }
 
@@ -28,6 +29,7 @@ type HouseType {
   Region: String!
   Ward: String!
   imgUrl: [String!]!
+  price: Float!
   status: String!
   user: UserType!
 }
@@ -67,6 +69,7 @@ input UpdateHouseInput {
   Ward: String
   id: Int!
   imgUrl: [String!]
+  price: Float
   status: String
 }
 

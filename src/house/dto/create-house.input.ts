@@ -17,6 +17,10 @@ export class CreateHouseInput {
 
   @IsNotEmpty()
   @Field()
+  price: number;
+
+  @IsNotEmpty()
+  @Field()
   Description: string;
 
   @IsArray()
