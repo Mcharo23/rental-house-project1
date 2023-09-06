@@ -4,6 +4,9 @@ import { UserType } from 'src/users/entities/user.type';
 @ObjectType()
 export class HouseType {
   @Field()
+  name: string;
+
+  @Field()
   Region: string;
 
   @Field()

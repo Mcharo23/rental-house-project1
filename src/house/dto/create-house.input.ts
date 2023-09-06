@@ -5,6 +5,10 @@ import { IsArray, IsNotEmpty } from 'class-validator';
 export class CreateHouseInput {
   @IsNotEmpty()
   @Field()
+  name: string;
+
+  @IsNotEmpty()
+  @Field()
   Region: string;
 
   @IsNotEmpty()

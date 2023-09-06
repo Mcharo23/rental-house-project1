@@ -7,6 +7,9 @@ export class House extends Document {
   _id: Types.ObjectId;
 
   @Prop()
+  name: string;
+
+  @Prop()
   Region: string;
 
   @Prop()

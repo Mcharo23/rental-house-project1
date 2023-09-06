@@ -36,7 +36,8 @@ export class UsersService {
       salt: salt,
     });
 
-    this.logger.log(await user.save());
+    await user.save();
+    this.logger.log(user);
 
     return user;
   }

@@ -1,10 +1,11 @@
 import { ObjectType, Field } from '@nestjs/graphql';
-import { HouseType } from '../entities/house.entity';
-import { UserType } from 'src/users/entities/user.type';
 import { User } from 'src/users/entities/user.schema';
 
 @ObjectType()
 export class HouseWithOwnerDto {
+  @Field()
+  name: string;
+
   @Field()
   Region: string;
 
