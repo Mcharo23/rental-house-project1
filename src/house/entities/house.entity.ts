@@ -1,8 +1,12 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { Types } from 'mongoose';
 import { UserType } from 'src/users/entities/user.type';
 
 @ObjectType()
 export class HouseType {
+  @Field(() => ID)
+  _id: Types.ObjectId;
+
   @Field()
   name: string;
 

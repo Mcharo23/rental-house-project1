@@ -29,6 +29,7 @@ type HouseType {
   District: String!
   Region: String!
   Ward: String!
+  _id: ID!
   imgUrl: [String!]!
   name: String!
   price: Float!
@@ -52,7 +53,7 @@ type Mutation {
   login(loginUserInput: LoginUserInput!): LoginResponse!
   removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
-  updateHouse(updateHouseInput: UpdateHouseInput!): HouseType!
+  updateHouse(updateHouseInput: UpdateHouseInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): UserType!
 }
 
@@ -65,15 +66,11 @@ type Query {
 }
 
 input UpdateHouseInput {
-  Description: String
-  District: String
-  Region: String
-  Ward: String
-  id: Int!
-  imgUrl: [String!]
-  name: String
-  price: Float
-  status: String
+  Description: String!
+  _id: ID!
+  name: String!
+  price: Float!
+  status: String!
 }
 
 input UpdateUserInput {

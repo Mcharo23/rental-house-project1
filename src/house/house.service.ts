@@ -93,12 +93,42 @@ export class HouseService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} house`;
+  findOne(houseId: number) {
+    return `This action returns a #house`;
   }
 
-  update(id: number, updateHouseInput: UpdateHouseInput) {
-    return `This action updates a #${id} house`;
+  async update(
+    updateHouseInput: UpdateHouseInput,
+    user: User,
+  ): Promise<string> {
+    try {
+      const house = await this.houseModel.findOne({
+        _id: new Types.ObjectId(updateHouseInput._id),
+      });
+
+      if (house && house.user.equals(user._id)) {
+        house.name = updateHouseInput.name;
+        house.price = updateHouseInput.price;
+        house.status = updateHouseInput.status;
+        house.Description = updateHouseInput.Description;
+
+        try {
+          await house.save();
+          this.logger.log(house);
+          return `Data successfully updated`;
+        } catch (error) {
+          this.logger.error(error);
+          throw error;
+        }
+      }
+
+      throw new UnauthorizedException(
+        'you are not authorized to edit this house',
+      );
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
   }
 
   remove(id: number) {

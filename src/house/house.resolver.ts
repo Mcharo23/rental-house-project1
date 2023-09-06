@@ -1,13 +1,4 @@
-import {
-  Resolver,
-  Query,
-  Mutation,
-  Args,
-  Int,
-  Context,
-  ResolveField,
-  Parent,
-} from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { HouseService } from './house.service';
 import { HouseType } from './entities/house.entity';
 import { CreateHouseInput } from './dto/create-house.input';
@@ -49,9 +40,12 @@ export class HouseResolver {
     return this.houseService.findOne(id);
   }
 
-  @Mutation(() => HouseType)
-  updateHouse(@Args('updateHouseInput') updateHouseInput: UpdateHouseInput) {
-    return this.houseService.update(updateHouseInput.id, updateHouseInput);
+  @Mutation(() => String)
+  updateHouse(
+    @Context() context,
+    @Args('updateHouseInput') updateHouseInput: UpdateHouseInput,
+  ): Promise<string> {
+    return this.houseService.update(updateHouseInput, context.req.user);
   }
 
   @Mutation(() => HouseType)
