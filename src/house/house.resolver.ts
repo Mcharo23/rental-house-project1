@@ -9,7 +9,6 @@ import { UsersService } from 'src/users/users.service';
 import { House } from './entities/house.schema';
 
 @Resolver(() => HouseType)
-@UseGuards(JwtAuthGuard)
 export class HouseResolver {
   private readonly logger = new Logger(HouseResolver.name);
   constructor(
@@ -18,6 +17,7 @@ export class HouseResolver {
   ) {}
 
   @Mutation(() => HouseType)
+  @UseGuards(JwtAuthGuard)
   createHouse(
     @Args('createHouseInput') createHouseInput: CreateHouseInput,
     @Context() context,
@@ -26,21 +26,30 @@ export class HouseResolver {
   }
 
   @Query(() => [HouseType], { name: 'houses' })
+  @UseGuards(JwtAuthGuard)
   findAll(): Promise<House[]> {
     return this.houseService.findAll();
   }
 
+  @Query(() => [HouseType], { name: 'demo' })
+  demoHouses(): Promise<House[]> {
+    return this.houseService.findAll();
+  }
+
   @Query(() => [HouseType], { name: 'myHouse' })
+  @UseGuards(JwtAuthGuard)
   findMyHouses(@Context() context): Promise<House[]> {
     return this.houseService.findMyHouses(context.req.user);
   }
 
   @Query(() => HouseType, { name: 'house' })
+  @UseGuards(JwtAuthGuard)
   findOne(@Args('id', { type: () => Int }) id: number) {
     return this.houseService.findOne(id);
   }
 
   @Mutation(() => String)
+  @UseGuards(JwtAuthGuard)
   updateHouse(
     @Context() context,
     @Args('updateHouseInput') updateHouseInput: UpdateHouseInput,
@@ -49,6 +58,7 @@ export class HouseResolver {
   }
 
   @Mutation(() => HouseType)
+  @UseGuards(JwtAuthGuard)
   removeHouse(@Args('id', { type: () => Int }) id: number) {
     return this.houseService.remove(id);
   }

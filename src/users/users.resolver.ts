@@ -2,9 +2,10 @@ import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { UserType } from './entities/user.type';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { UpdatePasswordInput } from './dto/update-user-password.input';
 import { NotFoundException, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Resolver(() => UserType)
 export class UsersResolver {
@@ -34,9 +35,25 @@ export class UsersResolver {
     return user;
   }
 
-  @Mutation(() => UserType)
-  updateUser(@Args('updateUserInput') updateUserInput: UpdateUserInput) {
-    return this.usersService.update(updateUserInput.id, updateUserInput);
+  @Mutation(() => String, { name: 'updatePassword' })
+  @UseGuards(JwtAuthGuard)
+  async updatePassword(
+    @Args('updatePasswordInput') updatePasswordInput: UpdatePasswordInput,
+    @Context() context,
+  ): Promise<string> {
+    return await this.usersService.updatePassword(
+      updatePasswordInput,
+      context.req.user,
+    );
+  }
+
+  @Mutation(() => String, { name: 'updateUser' })
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Args('updateUserInput') updateUserInput: UpdateUserInput,
+    @Context() context,
+  ): Promise<string> {
+    return await this.usersService.update(updateUserInput, context.req.user);
   }
 
   @Mutation(() => UserType)

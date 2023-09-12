@@ -2,6 +2,20 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type ContractType {
+  Duration: String!
+  Rent_per_terms: String!
+  Total_rent: String!
+  _id: ID!
+}
+
+input CreateContractInput {
+  Duration: String!
+  HouseID: ID!
+  Rent_per_terms: String!
+  Total_rent: String!
+}
+
 input CreateHouseInput {
   Description: String!
   District: String!
@@ -48,16 +62,21 @@ input LoginUserInput {
 }
 
 type Mutation {
+  createContract(createContractInput: CreateContractInput!): ContractType!
   createHouse(createHouseInput: CreateHouseInput!): HouseType!
   createUser(createUserInput: CreateUserInput!): UserType!
   login(loginUserInput: LoginUserInput!): LoginResponse!
+  removeContract(id: Int!): ContractType!
   removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
   updateHouse(updateHouseInput: UpdateHouseInput!): String!
-  updateUser(updateUserInput: UpdateUserInput!): UserType!
+  updatePassword(updatePasswordInput: UpdatePasswordInput!): String!
+  updateUser(updateUserInput: UpdateUserInput!): String!
 }
 
 type Query {
+  contract(id: Int!): ContractType!
+  demo: [HouseType!]!
   house(id: Int!): HouseType!
   houses: [HouseType!]!
   myHouse: [HouseType!]!
@@ -73,16 +92,14 @@ input UpdateHouseInput {
   status: String!
 }
 
+input UpdatePasswordInput {
+  currentpassword: String!
+  newPassword: String!
+}
+
 input UpdateUserInput {
-  accountType: String
-  firstName: String
-  gender: String
-  id: Int!
-  lastname: String
-  middleName: String
-  password: String
-  phoneNumber: String
-  username: String
+  phoneNumber: String!
+  username: String!
 }
 
 type UserType {

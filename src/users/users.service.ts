@@ -3,14 +3,16 @@ import {
   ConflictException,
   Injectable,
   Logger,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserInput } from './dto/create-user.input';
-import { UpdateUserInput } from './dto/update-user.input';
+import { UpdatePasswordInput } from './dto/update-user-password.input';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './entities/user.schema';
 import { Model, Types } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { UserType } from './entities/user.type';
+import { UpdateUserInput } from './dto/update-user.input';
 
 @Injectable()
 export class UsersService {
@@ -66,15 +68,89 @@ export class UsersService {
     });
   }
 
-  update(id: number, updateUserInput: UpdateUserInput) {
-    return `This action updates a #${id} user`;
+  async updatePassword(
+    updatePasswordInput: UpdatePasswordInput,
+    user: User,
+  ): Promise<string> {
+    try {
+      const updateQuery = {
+        username: user.username,
+      };
+
+      const salt = await this.generateSalt();
+
+      const updateField = {
+        $set: {
+          password: await this.hashPassword(
+            updatePasswordInput.newPassword,
+            salt,
+          ),
+          salt: salt,
+        },
+      };
+
+      if (
+        await bcrypt.compare(updatePasswordInput.currentpassword, user.password)
+      ) {
+        const updateResult = await this.userModel.updateOne(
+          updateQuery,
+          updateField,
+        );
+
+        if (updateResult.modifiedCount > 0) {
+          this.logger.log(updateResult);
+
+          return 'Password successfully updated';
+        }
+      }
+
+      throw new UnauthorizedException('Invalid credentials');
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
+  }
+
+  async update(updateUserInput: UpdateUserInput, user: User): Promise<string> {
+    try {
+      const updateQuery = {
+        username: user.username,
+      };
+
+      const updateField = {
+        $set: {
+          username: updateUserInput.username,
+          phoneNumber: updateUserInput.phoneNumber,
+        },
+      };
+
+      const updateResult = await this.userModel.updateOne(
+        updateQuery,
+        updateField,
+      );
+
+      if (updateResult.modifiedCount > 0) {
+        return 'data successfully updated';
+      }
+
+      throw new UnauthorizedException(
+        'You are not authorized to update these fields',
+      );
+    } catch (error) {
+      this.logger.error(error);
+      throw error;
+    }
   }
 
   remove(id: number) {
     return `This action removes a #${id} user`;
   }
 
-  async hashPassword(password, salt): Promise<string> {
+  async hashPassword(password: string, salt: string): Promise<string> {
     return await bcrypt.hash(password, salt);
+  }
+
+  async generateSalt(): Promise<string> {
+    return await bcrypt.genSalt();
   }
 }

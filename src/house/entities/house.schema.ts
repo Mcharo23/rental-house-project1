@@ -1,5 +1,7 @@
 import { Document, Types } from 'mongoose';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { User } from 'src/users/entities/user.schema';
+import { Contract } from 'src/contract/entities/contract.schema';
 
 @Schema()
 export class House extends Document {
@@ -28,7 +30,10 @@ export class House extends Document {
   status: string;
 
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  user: Types.ObjectId;
+  user: User;
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'House' }], default: [] })
+  contract?: Contract[];
 
   @Prop(() => [String])
   imgUrl: string[];

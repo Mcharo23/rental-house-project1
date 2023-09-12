@@ -1,6 +1,5 @@
 import { IsNotEmpty } from 'class-validator';
-import { CreateHouseInput } from './create-house.input';
-import { InputType, Field, PartialType, ID } from '@nestjs/graphql';
+import { InputType, Field, ID } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 
 @InputType()

@@ -40,10 +40,10 @@ export class HouseService {
 
       await house.save();
 
-      found.house.push(houseId);
+      found.house.push(house);
       await found.save();
 
-      this.logger.log(house._id);
+      this.logger.log(house);
 
       return house;
     } catch (error) {
@@ -55,11 +55,38 @@ export class HouseService {
   async findAll() {
     try {
       const houses = await this.houseModel.find({}).populate('user', '').exec();
-      console.log(houses);
+      if (houses.length === 0) {
+        throw new NotFoundException('No house present');
+      }
+      this.logger.log(houses);
+
+      return houses;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        this.logger.error(error);
+        throw error;
+      }
+
+      this.logger.error(error.message);
+      throw new InternalServerErrorException(
+        'An error occurred while fetching houses',
+      );
+    }
+  }
+
+  async demoHouses() {
+    try {
+      const houses = await this.houseModel
+        .find({})
+        .sort({ createdAt: -1 })
+        .limit(10)
+        .populate('user', '')
+        .exec();
       if (houses.length === 0) {
         throw new NotFoundException('No house present');
       }
 
+      this.logger.log(houses);
       return houses;
     } catch (error) {
       if (error instanceof NotFoundException) {
@@ -102,28 +129,32 @@ export class HouseService {
     user: User,
   ): Promise<string> {
     try {
-      const house = await this.houseModel.findOne({
+      const updateQuery = {
         _id: new Types.ObjectId(updateHouseInput._id),
-      });
+        user: user._id,
+      };
 
-      if (house && house.user.equals(user._id)) {
-        house.name = updateHouseInput.name;
-        house.price = updateHouseInput.price;
-        house.status = updateHouseInput.status;
-        house.Description = updateHouseInput.Description;
+      const updateFields = {
+        $set: {
+          name: updateHouseInput.name,
+          price: updateHouseInput.price,
+          status: updateHouseInput.status,
+          Description: updateHouseInput.Description,
+        },
+      };
 
-        try {
-          await house.save();
-          this.logger.log(house);
-          return `Data successfully updated`;
-        } catch (error) {
-          this.logger.error(error);
-          throw error;
-        }
+      const updateResult = await this.houseModel.updateOne(
+        updateQuery,
+        updateFields,
+      );
+
+      if (updateResult.modifiedCount > 0) {
+        this.logger.log(updateResult);
+        return `Data successfully updated`;
       }
 
       throw new UnauthorizedException(
-        'you are not authorized to edit this house',
+        'You are not authorized to edit this house',
       );
     } catch (error) {
       this.logger.error(error);

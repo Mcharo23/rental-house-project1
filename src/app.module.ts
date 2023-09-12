@@ -7,6 +7,7 @@ import { join } from 'path';
 import { AuthModule } from './auth/auth.module';
 import { GraphQLError, GraphQLFormattedError } from 'graphql';
 import { HouseModule } from './house/house.module';
+import { ContractModule } from './contract/contract.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { HouseModule } from './house/house.module';
     UsersModule,
     AuthModule,
     HouseModule,
+    ContractModule,
   ],
 })
 export class AppModule {}

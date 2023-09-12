@@ -1,6 +1,8 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IsNotEmpty, IsPhoneNumber } from 'class-validator';
 import { Document, Types } from 'mongoose';
+import { Contract } from 'src/contract/entities/contract.schema';
+import { House } from 'src/house/entities/house.schema';
 
 @Schema()
 export class User extends Document {
@@ -35,7 +37,10 @@ export class User extends Document {
   accountType: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: 'House' }], default: [] })
-  house?: Types.ObjectId[];
+  house?: House[];
+
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'House' }], default: [] })
+  contract?: Contract[];
 
   @IsNotEmpty()
   @Prop()

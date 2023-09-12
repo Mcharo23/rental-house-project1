@@ -12,6 +12,6 @@ import { UsersService } from 'src/users/users.service';
     UsersModule,
   ],
   providers: [HouseResolver, HouseService, UsersService],
-  exports: [HouseService],
+  exports: [HouseService, MongooseModule],
 })
 export class HouseModule {}
