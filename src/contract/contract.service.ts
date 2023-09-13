@@ -26,6 +26,9 @@ export class ContractService {
     createContractInput: CreateContractInput,
     user: User,
   ): Promise<Contract> {
+    const session = await this.contractModel.db.startSession();
+    session.startTransaction();
+
     try {
       const house = await this.houseModel.findOne({
         _id: new Types.ObjectId(createContractInput.HouseID),
@@ -50,13 +53,19 @@ export class ContractService {
       house.contract.push(contract);
       house.status = HouseStatus.BOOKED;
 
-      await contract.save();
-      await user.save();
-      await house.save();
+      await contract.save({ session });
+      await user.save({ session });
+      await house.save({ session });
+
+      await session.commitTransaction();
+      session.endSession();
 
       this.logger.log(contract);
       return contract;
     } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+
       this.logger.error(error.message);
       throw error;
     }
