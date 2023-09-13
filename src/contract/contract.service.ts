@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   Logger,
@@ -12,6 +13,7 @@ import { Model, Types } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { House } from 'src/house/entities/house.schema';
 import { HouseStatus } from 'src/lib/enum';
+import { HouseService } from 'src/house/house.service';
 
 @Injectable()
 export class ContractService {
@@ -20,19 +22,17 @@ export class ContractService {
     @InjectModel(Contract.name) private readonly contractModel: Model<Contract>,
     @InjectModel(House.name) private readonly houseModel: Model<House>,
     @InjectModel(User.name) private readonly userModel: Model<User>,
+    private readonly houseService: HouseService,
   ) {}
 
   async create(
     createContractInput: CreateContractInput,
     user: User,
   ): Promise<Contract> {
-    const session = await this.contractModel.db.startSession();
-    session.startTransaction();
-
     try {
-      const house = await this.houseModel.findOne({
-        _id: new Types.ObjectId(createContractInput.HouseID),
-      });
+      const house = await this.houseService.findOne(
+        new Types.ObjectId(createContractInput.House),
+      );
 
       if (!house) {
         throw new NotFoundException('House not found');
@@ -44,43 +44,154 @@ export class ContractService {
 
       const contract = await this.contractModel.create({
         _id: new Types.ObjectId(),
-        HouseID: house,
-        TenantID: user,
+        Tenant: user,
         ...createContractInput,
+        House: house,
       });
 
       user.contract.push(contract);
       house.contract.push(contract);
-      house.status = HouseStatus.BOOKED;
+      // house.status = HouseStatus.BOOKED;
 
-      await contract.save({ session });
-      await user.save({ session });
-      await house.save({ session });
-
-      await session.commitTransaction();
-      session.endSession();
+      await contract.save();
+      await user.save();
+      await house.save();
 
       this.logger.log(contract);
       return contract;
     } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
-
       this.logger.error(error.message);
       throw error;
     }
   }
 
-  findAll() {
-    return `This action returns all contract`;
+  async findAll(): Promise<Contract[]> {
+    try {
+      const contract = await this.contractModel
+        .find({})
+        .populate('Tenant', '')
+        .populate('House', '')
+        .exec();
+
+      if (contract.length === 0) {
+        throw new NotFoundException('No contract found');
+      }
+
+      this.logger.log(contract);
+
+      return contract;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} contract`;
+  async findOne(contract: Types.ObjectId): Promise<Contract> {
+    try {
+      const found = await this.contractModel
+        .findOne({
+          _id: contract,
+        })
+        .populate('Tenant', '')
+        .populate('House', '')
+        .exec();
+
+      if (!found) {
+        throw new NotFoundException('No contract found');
+      }
+
+      return found;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
   }
 
-  update(id: number, updateContractInput: UpdateContractInput) {
-    return `This action updates a #${id} contract`;
+  async findMany(Tenant: User): Promise<Contract[]> {
+    try {
+      const contract = await this.contractModel
+        .find({
+          Tenant: Tenant._id,
+        })
+        .populate('Tenant', '', this.userModel)
+        .populate('House', '', this.houseModel)
+        .exec();
+
+      if (contract.length === 0) {
+        throw new NotFoundException("You don't have and contract");
+      }
+
+      this.logger.log(contract);
+      return contract;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  async update(updateContractInput: UpdateContractInput) {
+    try {
+      const contract = await this.findOne(
+        new Types.ObjectId(updateContractInput.ContractID),
+      );
+
+      if (contract.Date_of_signing === null) {
+        throw new BadRequestException('Contract must be signed first');
+      }
+
+      // Calculate End_of_contract based on Duration
+      const currentDate = new Date();
+      const currentMonth = currentDate.getMonth();
+      const currentYear = currentDate.getFullYear();
+
+      const endOfContract = new Date(
+        currentYear,
+        currentMonth,
+        currentDate.getDate(),
+      );
+
+      // Adding the duration to the current date
+      endOfContract.setMonth(
+        endOfContract.getMonth() + parseInt(contract.Duration, 10),
+      );
+
+      // Adjust the end date based on varying month lengths
+      while (
+        endOfContract.getMonth() !==
+        (currentMonth + parseInt(contract.Duration, 10)) % 12
+      ) {
+        endOfContract.setDate(endOfContract.getDate() - 1);
+      }
+
+      contract.Date_of_contract = currentDate;
+      contract.End_of_contract = endOfContract;
+
+      await contract.save();
+
+      return contract;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  async signContract(
+    updateContractInput: UpdateContractInput,
+  ): Promise<string> {
+    try {
+      const contract = await this.findOne(
+        new Types.ObjectId(updateContractInput.ContractID),
+      );
+
+      const currentDate = new Date();
+      contract.Date_of_signing = currentDate;
+
+      await contract.save();
+      return 'The contract has been signed successfully';
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
   }
 
   remove(id: number) {

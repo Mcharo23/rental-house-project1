@@ -6,7 +6,7 @@ import { Types } from 'mongoose';
 export class CreateContractInput {
   @Field(() => ID)
   @IsNotEmpty({ message: 'House id should not be empty' })
-  HouseID: Types.ObjectId;
+  House: Types.ObjectId;
 
   @Field()
   @IsNotEmpty({ message: 'Duration should not be empty' })

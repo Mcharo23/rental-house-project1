@@ -32,7 +32,7 @@ export class House extends Document {
   @Prop({ type: Types.ObjectId, ref: 'User' })
   user: User;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'House' }], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Contract' }], default: [] })
   contract?: Contract[];
 
   @Prop(() => [String])

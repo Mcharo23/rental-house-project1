@@ -4,14 +4,16 @@
 
 type ContractType {
   Duration: String!
+  House: HouseType!
   Rent_per_terms: String!
+  Tenant: UserType!
   Total_rent: String!
   _id: ID!
 }
 
 input CreateContractInput {
   Duration: String!
-  HouseID: ID!
+  House: ID!
   Rent_per_terms: String!
   Total_rent: String!
 }
@@ -69,19 +71,39 @@ type Mutation {
   removeContract(id: Int!): ContractType!
   removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
+  signContract(updateContractInput: UpdateContractInput!): String!
+  update(updateContractInput: UpdateContractInput!): ContractType!
   updateHouse(updateHouseInput: UpdateHouseInput!): String!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): String!
 }
 
+type MyHouseType {
+  Description: String!
+  District: String!
+  Region: String!
+  Ward: String!
+  _id: ID!
+  contract: [ContractType!]!
+  imgUrl: [String!]!
+  name: String!
+  price: Float!
+  status: String!
+}
+
 type Query {
-  contract(id: Int!): ContractType!
+  contracts: [ContractType!]!
   demo: [HouseType!]!
-  house(id: Int!): HouseType!
+  house(HoiseID: String!): HouseType!
   houses: [HouseType!]!
-  myHouse: [HouseType!]!
+  myContract: [ContractType!]!
+  myHouse: [MyHouseType!]!
   user(username: String!): UserType!
   users: [UserType!]!
+}
+
+input UpdateContractInput {
+  ContractID: ID!
 }
 
 input UpdateHouseInput {

@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Date, Document, Types } from 'mongoose';
+import { Document, Types } from 'mongoose';
 import { House } from 'src/house/entities/house.schema';
 import { User } from 'src/users/entities/user.schema';
 
@@ -8,11 +8,11 @@ export class Contract extends Document {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: 'House' })
-  HouseID: House;
-
   @Prop({ type: Types.ObjectId, ref: 'User' })
-  TenantID: User;
+  Tenant: User;
+
+  @Prop({ type: Types.ObjectId, ref: 'House' })
+  House: House;
 
   @Prop()
   Duration: string;

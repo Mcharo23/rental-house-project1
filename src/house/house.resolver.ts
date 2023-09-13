@@ -7,6 +7,8 @@ import { Logger, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { House } from './entities/house.schema';
+import { Types } from 'mongoose';
+import { MyHouseType } from './entities/my-house.entity';
 
 @Resolver(() => HouseType)
 export class HouseResolver {
@@ -36,7 +38,7 @@ export class HouseResolver {
     return this.houseService.findAll();
   }
 
-  @Query(() => [HouseType], { name: 'myHouse' })
+  @Query(() => [MyHouseType], { name: 'myHouse' })
   @UseGuards(JwtAuthGuard)
   findMyHouses(@Context() context): Promise<House[]> {
     return this.houseService.findMyHouses(context.req.user);
@@ -44,8 +46,8 @@ export class HouseResolver {
 
   @Query(() => HouseType, { name: 'house' })
   @UseGuards(JwtAuthGuard)
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.houseService.findOne(id);
+  findOne(@Args('HoiseID', { type: () => String }) HoiseID: string) {
+    return this.houseService.findOne(new Types.ObjectId(HoiseID));
   }
 
   @Mutation(() => String)

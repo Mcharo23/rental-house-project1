@@ -78,9 +78,8 @@ export class HouseService {
     try {
       const houses = await this.houseModel
         .find({})
-        .sort({ createdAt: -1 })
         .limit(10)
-        .populate('user', '')
+        .populate('user', '', this.userModel)
         .exec();
       if (houses.length === 0) {
         throw new NotFoundException('No house present');
@@ -105,13 +104,20 @@ export class HouseService {
     try {
       const houses = await this.houseModel
         .find({ user: user._id })
-        .populate('user')
+        .populate({
+          path: 'contract',
+          populate: [
+            { path: 'Tenant', model: 'User' },
+            { path: 'House', model: 'House' },
+          ],
+        })
         .exec();
-      this.logger.log(houses);
 
       if (houses.length === 0) {
         throw new NotFoundException('No house present');
       }
+
+      this.logger.log(houses);
 
       return houses;
     } catch (error) {
@@ -120,8 +126,16 @@ export class HouseService {
     }
   }
 
-  findOne(houseId: number) {
-    return `This action returns a #house`;
+  async findOne(houseId: Types.ObjectId): Promise<House> {
+    const house = await this.houseModel.findOne({
+      _id: houseId,
+    });
+
+    if (!house) {
+      throw new NotFoundException('House not found');
+    }
+
+    return house;
   }
 
   async update(

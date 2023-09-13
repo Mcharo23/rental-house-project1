@@ -1,10 +1,9 @@
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 import { ContractType } from 'src/contract/entities/contract.entity';
-import { UserType } from 'src/users/entities/user.type';
 
 @ObjectType()
-export class HouseType {
+export class MyHouseType {
   @Field(() => ID)
   _id: Types.ObjectId;
 
@@ -26,8 +25,8 @@ export class HouseType {
   @Field()
   Description: string;
 
-  @Field(() => UserType)
-  user: UserType;
+  @Field(() => [ContractType])
+  contract: ContractType[];
 
   @Field()
   status: string;

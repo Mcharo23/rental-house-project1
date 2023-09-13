@@ -9,7 +9,7 @@ export class User extends Document {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
 
-  @Prop()
+  @Prop({ unique: true })
   username: string;
 
   @IsNotEmpty()
@@ -39,7 +39,7 @@ export class User extends Document {
   @Prop({ type: [{ type: Types.ObjectId, ref: 'House' }], default: [] })
   house?: House[];
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: 'House' }], default: [] })
+  @Prop({ type: [{ type: Types.ObjectId, ref: 'Contract' }], default: [] })
   contract?: Contract[];
 
   @IsNotEmpty()

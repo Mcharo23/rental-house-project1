@@ -4,6 +4,7 @@ import { ContractType } from './entities/contract.entity';
 import { CreateContractInput } from './dto/create-contract.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { UpdateContractInput } from './dto/update-contract.input';
 
 @Resolver(() => ContractType)
 @UseGuards(JwtAuthGuard)
@@ -21,25 +22,29 @@ export class ContractResolver {
     );
   }
 
-  @Query(() => [ContractType], { name: 'contract' })
-  findAll() {
-    return this.contractService.findAll();
+  @Query(() => [ContractType], { name: 'contracts' })
+  async findAll(): Promise<ContractType[]> {
+    return await this.contractService.findAll();
   }
 
-  @Query(() => ContractType, { name: 'contract' })
-  findOne(@Args('id', { type: () => Int }) id: number) {
-    return this.contractService.findOne(id);
+  @Query(() => [ContractType], { name: 'myContract' })
+  async findMany(@Context() context): Promise<ContractType[]> {
+    return await this.contractService.findMany(context.req.user);
   }
 
-  // @Mutation(() => Contract)
-  // updateContract(
-  //   @Args('updateContractInput') updateContractInput: UpdateContractInput,
-  // ) {
-  //   return this.contractService.update(
-  //     updateContractInput.HouseID,
-  //     updateContractInput,
-  //   );
-  // }
+  @Mutation(() => String, { name: 'signContract' })
+  async signContract(
+    @Args('updateContractInput') updateContractInput: UpdateContractInput,
+  ): Promise<string> {
+    return await this.contractService.signContract(updateContractInput);
+  }
+
+  @Mutation(() => ContractType, { name: 'update' })
+  update(
+    @Args('updateContractInput') updateContractInput: UpdateContractInput,
+  ) {
+    return this.contractService.update(updateContractInput);
+  }
 
   @Mutation(() => ContractType)
   removeContract(@Args('id', { type: () => Int }) id: number) {
