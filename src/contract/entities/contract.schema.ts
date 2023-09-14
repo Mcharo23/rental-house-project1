@@ -27,9 +27,6 @@ export class Contract extends Document {
   End_of_contract?: Date | null;
 
   @Prop()
-  Rent_per_terms: string;
-
-  @Prop()
   Total_rent: string;
 
   @Prop({ type: Date, default: Date.now })

@@ -53,4 +53,3 @@ export class ContractResolver {
     return this.contractService.remove(removeContractInput);
   }
 }
-//6501a6a4c187249847c095e0
