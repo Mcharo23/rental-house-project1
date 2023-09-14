@@ -52,7 +52,7 @@ export class ContractService {
 
       user.contract.push(contract);
       house.contract.push(contract);
-      // house.status = HouseStatus.BOOKED;
+      house.status = HouseStatus.PENDING;
 
       await contract.save();
       await user.save();
@@ -184,10 +184,14 @@ export class ContractService {
         new Types.ObjectId(updateContractInput.ContractID),
       );
 
+      const house = contract.House;
+      house.status = HouseStatus.BOOKED;
+
       const currentDate = new Date();
       contract.Date_of_signing = currentDate;
 
       await contract.save();
+      await house.save();
       return 'The contract has been signed successfully';
     } catch (error) {
       this.logger.error(error.message);
@@ -214,6 +218,7 @@ export class ContractService {
 
       if (indexInHouse !== -1 && indexInTenant !== -1) {
         house.contract.splice(indexInHouse, 1);
+        house.status = HouseStatus.AVAILABLE;
         tenant.contract.splice(indexInTenant, 1);
 
         await house.save();
