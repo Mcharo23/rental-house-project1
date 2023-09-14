@@ -68,7 +68,7 @@ type Mutation {
   createHouse(createHouseInput: CreateHouseInput!): HouseType!
   createUser(createUserInput: CreateUserInput!): UserType!
   login(loginUserInput: LoginUserInput!): LoginResponse!
-  removeContract(id: Int!): ContractType!
+  removeContract(removeContractInput: UpdateContractInput!): String!
   removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
   signContract(updateContractInput: UpdateContractInput!): String!

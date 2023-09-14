@@ -2,6 +2,7 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -97,7 +98,7 @@ export class ContractService {
         .exec();
 
       if (!found) {
-        throw new NotFoundException('No contract found');
+        throw new NotFoundException();
       }
 
       return found;
@@ -194,7 +195,45 @@ export class ContractService {
     }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} contract`;
+  async remove(updateContractInput: UpdateContractInput): Promise<string> {
+    try {
+      const contract = new Types.ObjectId(updateContractInput.ContractID);
+
+      const found = await this.findOne(contract);
+
+      const house = found.House;
+      const tenant = found.Tenant;
+
+      const indexInHouse = house.contract.findIndex(
+        (object) => object.toString() === contract.toString(),
+      );
+
+      const indexInTenant = house.contract.findIndex(
+        (object) => object.toString() === contract.toString(),
+      );
+
+      if (indexInHouse !== -1 && indexInTenant !== -1) {
+        house.contract.splice(indexInHouse, 1);
+        tenant.contract.splice(indexInTenant, 1);
+
+        await house.save();
+        await tenant.save();
+
+        const contract = await this.contractModel.deleteOne({
+          _id: new Types.ObjectId(updateContractInput.ContractID),
+        });
+
+        if (contract.deletedCount === 0) {
+          throw new NotFoundException();
+        }
+
+        return 'Contract successfully deleted';
+      }
+
+      throw new InternalServerErrorException();
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
   }
 }

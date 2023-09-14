@@ -46,8 +46,11 @@ export class ContractResolver {
     return this.contractService.update(updateContractInput);
   }
 
-  @Mutation(() => ContractType)
-  removeContract(@Args('id', { type: () => Int }) id: number) {
-    return this.contractService.remove(id);
+  @Mutation(() => String, { name: 'removeContract' })
+  removeContract(
+    @Args('removeContractInput') removeContractInput: UpdateContractInput,
+  ): Promise<string> {
+    return this.contractService.remove(removeContractInput);
   }
 }
+//6501a6a4c187249847c095e0
