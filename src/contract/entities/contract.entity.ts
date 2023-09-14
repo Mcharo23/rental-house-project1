@@ -9,10 +9,7 @@ export class ContractType {
   _id: Types.ObjectId;
 
   @Field()
-  Duration: string;
-
-  @Field()
-  Rent_per_terms: string;
+  Duration: number;
 
   @Field()
   Total_rent: string;

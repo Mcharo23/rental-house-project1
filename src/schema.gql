@@ -3,18 +3,16 @@
 # ------------------------------------------------------
 
 type ContractType {
-  Duration: String!
+  Duration: Float!
   House: HouseType!
-  Rent_per_terms: String!
   Tenant: UserType!
   Total_rent: String!
   _id: ID!
 }
 
 input CreateContractInput {
-  Duration: String!
+  Duration: Float!
   House: ID!
-  Rent_per_terms: String!
   Total_rent: String!
 }
 

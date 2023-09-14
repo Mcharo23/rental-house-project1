@@ -153,13 +153,13 @@ export class ContractService {
 
       // Adding the duration to the current date
       endOfContract.setMonth(
-        endOfContract.getMonth() + parseInt(contract.Duration, 10),
+        endOfContract.getMonth() + parseInt(String(contract.Duration), 10),
       );
 
       // Adjust the end date based on varying month lengths
       while (
         endOfContract.getMonth() !==
-        (currentMonth + parseInt(contract.Duration, 10)) % 12
+        (currentMonth + parseInt(String(contract.Duration), 10)) % 12
       ) {
         endOfContract.setDate(endOfContract.getDate() - 1);
       }

@@ -15,7 +15,7 @@ export class Contract extends Document {
   House: House;
 
   @Prop()
-  Duration: string;
+  Duration: number;
 
   @Prop({ type: Date, default: null })
   Date_of_signing?: Date | null;

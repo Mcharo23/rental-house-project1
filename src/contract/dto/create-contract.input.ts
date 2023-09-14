@@ -10,11 +10,7 @@ export class CreateContractInput {
 
   @Field()
   @IsNotEmpty({ message: 'Duration should not be empty' })
-  Duration: string;
-
-  @Field()
-  @IsNotEmpty({ message: 'Price should not be empty' })
-  Rent_per_terms: string;
+  Duration: number;
 
   @Field()
   @IsNotEmpty({ message: 'Total rent should not be empty' })
