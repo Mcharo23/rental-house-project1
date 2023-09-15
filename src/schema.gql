@@ -3,7 +3,10 @@
 # ------------------------------------------------------
 
 type ContractType {
+  Date_of_contract: DateTime
+  Date_of_signing: DateTime
   Duration: Float!
+  End_of_contract: DateTime
   House: HouseType!
   Tenant: UserType!
   Total_rent: String!
@@ -37,6 +40,11 @@ input CreateUserInput {
   phoneNumber: String!
   username: String!
 }
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type HouseType {
   Description: String!

@@ -39,8 +39,17 @@ export class ContractService {
         throw new NotFoundException('House not found');
       }
 
-      if (house.status === HouseStatus.BOOKED) {
-        throw new ConflictException('Sorry, the house has already booked');
+      if (
+        house.status === HouseStatus.PENDING ||
+        house.status === HouseStatus.BOOKED
+      ) {
+        throw new ConflictException(
+          `${
+            house.status === HouseStatus.PENDING
+              ? 'Sorry, this house has a pending request'
+              : 'Sorry, this house is booked'
+          }`,
+        );
       }
 
       const contract = await this.contractModel.create({

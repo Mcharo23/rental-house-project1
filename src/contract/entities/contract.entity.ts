@@ -14,6 +14,15 @@ export class ContractType {
   @Field()
   Total_rent: string;
 
+  @Field(() => Date, { nullable: true, defaultValue: null })
+  Date_of_signing?: Date | null;
+
+  @Field(() => Date, { nullable: true, defaultValue: null })
+  Date_of_contract?: Date | null;
+
+  @Field(() => Date, { nullable: true, defaultValue: null })
+  End_of_contract?: Date | null;
+
   @Field(() => HouseType)
   House: HouseType;
 
