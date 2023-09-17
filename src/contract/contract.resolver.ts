@@ -39,11 +39,23 @@ export class ContractResolver {
     return await this.contractService.signContract(updateContractInput);
   }
 
-  @Mutation(() => ContractType, { name: 'update' })
-  update(
+  @Mutation(() => ContractType, { name: 'tenantIn' })
+  tenantIn(
     @Args('updateContractInput') updateContractInput: UpdateContractInput,
   ) {
-    return this.contractService.update(updateContractInput);
+    return this.contractService.tenantIn(updateContractInput);
+  }
+
+  @Mutation(() => String, { name: 'tenantOut' })
+  tenantOut(
+    @Args('updateContractInput') updateContractInput: UpdateContractInput,
+  ): Promise<string> {
+    return this.contractService.tenantOut(updateContractInput);
+  }
+
+  @Query(() => [ContractType], { name: 'watchContract' })
+  async watchContract(@Context() context): Promise<ContractType[]> {
+    return await this.contractService.watchContract(context.req.user);
   }
 
   @Mutation(() => String, { name: 'removeContract' })

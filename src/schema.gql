@@ -5,12 +5,13 @@
 type ContractType {
   Date_of_contract: DateTime
   Date_of_signing: DateTime
-  Duration: Float!
+  Duration: Int!
   End_of_contract: DateTime
   House: HouseType!
   Tenant: UserType!
   Total_rent: String!
   _id: ID!
+  isCurrent: Boolean!
 }
 
 input CreateContractInput {
@@ -78,7 +79,8 @@ type Mutation {
   removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
   signContract(updateContractInput: UpdateContractInput!): String!
-  update(updateContractInput: UpdateContractInput!): ContractType!
+  tenantIn(updateContractInput: UpdateContractInput!): ContractType!
+  tenantOut(updateContractInput: UpdateContractInput!): String!
   updateHouse(updateHouseInput: UpdateHouseInput!): String!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): String!
   updateUser(updateUserInput: UpdateUserInput!): String!
@@ -106,6 +108,7 @@ type Query {
   myHouse: [MyHouseType!]!
   user(username: String!): UserType!
   users: [UserType!]!
+  watchContract: [ContractType!]!
 }
 
 input UpdateContractInput {

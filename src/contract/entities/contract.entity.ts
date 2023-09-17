@@ -1,4 +1,4 @@
-import { ObjectType, Field, ID } from '@nestjs/graphql';
+import { ObjectType, Field, ID, Int } from '@nestjs/graphql';
 import { Types } from 'mongoose';
 import { HouseType } from 'src/house/entities/house.entity';
 import { UserType } from 'src/users/entities/user.type';
@@ -9,6 +9,9 @@ export class ContractType {
   _id: Types.ObjectId;
 
   @Field()
+  isCurrent: boolean;
+
+  @Field(() => Int)
   Duration: number;
 
   @Field()

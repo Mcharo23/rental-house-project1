@@ -5,6 +5,7 @@ import {
   InternalServerErrorException,
   Logger,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateContractInput } from './dto/create-contract.input';
 import { UpdateContractInput } from './dto/update-contract.input';
@@ -139,7 +140,7 @@ export class ContractService {
     }
   }
 
-  async update(updateContractInput: UpdateContractInput) {
+  async tenantIn(updateContractInput: UpdateContractInput) {
     try {
       const contract = await this.findOne(
         new Types.ObjectId(updateContractInput.ContractID),
@@ -179,6 +180,66 @@ export class ContractService {
       await contract.save();
 
       return contract;
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+  }
+
+  async tenantOut(updateContractInput: UpdateContractInput): Promise<string> {
+    try {
+      const contract = await this.findOne(
+        new Types.ObjectId(updateContractInput.ContractID),
+      );
+
+      const startDate = new Date(contract.Date_of_contract);
+      const endDate = new Date(contract.End_of_contract);
+
+      const monthsDifference =
+        (endDate.getFullYear() - startDate.getFullYear()) * 12 +
+        (endDate.getMonth() - startDate.getMonth());
+
+      if (monthsDifference > 0) {
+        throw new UnauthorizedException('You can not take tenant out');
+      }
+
+      contract.isCurrent = false;
+      contract.House.status = HouseStatus.AVAILABLE;
+
+      await contract.save();
+      await contract.House.save();
+    } catch (error) {
+      this.logger.error(error.message);
+      throw error;
+    }
+
+    return 'Successfully tenant out';
+  }
+
+  async watchContract(user: User): Promise<Contract[]> {
+    try {
+      const contract = await this.findMany(user);
+
+      const contracts: Contract[] = [];
+
+      contract.forEach((contract) => {
+        const startDate = contract.Date_of_contract;
+
+        const currentDate = new Date();
+        const monthsDifference =
+          (currentDate.getFullYear() - startDate.getFullYear()) * 12 +
+          (currentDate.getMonth() - startDate.getMonth());
+
+        if (monthsDifference <= 0 && contract.isCurrent) {
+          contracts.push(contract);
+        }
+      });
+
+      if (contracts.length === 0) {
+        throw new NotFoundException('No expired contracts');
+      }
+
+      return contracts;
     } catch (error) {
       this.logger.error(error.message);
       throw error;

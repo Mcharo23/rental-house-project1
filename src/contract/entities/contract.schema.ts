@@ -8,6 +8,9 @@ export class Contract extends Document {
   @Prop({ type: Types.ObjectId })
   _id: Types.ObjectId;
 
+  @Prop({ default: true })
+  isCurrent: boolean;
+
   @Prop({ type: Types.ObjectId, ref: 'User' })
   Tenant: User;
 
