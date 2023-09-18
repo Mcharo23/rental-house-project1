@@ -178,6 +178,7 @@ export class ContractService {
       contract.End_of_contract = endOfContract;
 
       await contract.save();
+      this.logger.log(contract);
 
       return `The contract starts counting on ${currentDate} and ends on ${endOfContract}`;
     } catch (error) {

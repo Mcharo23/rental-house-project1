@@ -58,7 +58,7 @@ export class ContractResolver {
     return await this.contractService.watchContract(context.req.user);
   }
 
-  @Mutation(() => String, { name: 'removeContract' })
+  @Mutation(() => String, { name: 'rejectContract' })
   removeContract(
     @Args('removeContractInput') removeContractInput: UpdateContractInput,
   ): Promise<string> {
