@@ -11,7 +11,7 @@ import { ContractModule } from './contract/contract.module';
 
 @Module({
   imports: [
-    MongooseModule.forRoot('mongodb://localhost/test2'),
+    MongooseModule.forRoot('mongodb://localhost/test1'),
     GraphQLModule.forRoot<ApolloDriverConfig>({
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),

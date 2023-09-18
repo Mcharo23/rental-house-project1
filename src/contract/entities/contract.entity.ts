@@ -17,6 +17,9 @@ export class ContractType {
   @Field()
   Total_rent: string;
 
+  @Field(() => Date)
+  createdAt: Date;
+
   @Field(() => Date, { nullable: true, defaultValue: null })
   Date_of_signing?: Date | null;
 

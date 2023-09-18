@@ -179,7 +179,7 @@ export class ContractService {
 
       await contract.save();
 
-      return contract;
+      return `The contract starts counting on ${currentDate} and ends on ${endOfContract}`;
     } catch (error) {
       this.logger.error(error.message);
       throw error;
@@ -248,7 +248,7 @@ export class ContractService {
 
   async signContract(
     updateContractInput: UpdateContractInput,
-  ): Promise<string> {
+  ): Promise<Contract> {
     try {
       const contract = await this.findOne(
         new Types.ObjectId(updateContractInput.ContractID),
@@ -262,7 +262,7 @@ export class ContractService {
 
       await contract.save();
       await house.save();
-      return 'The contract has been signed successfully';
+      return contract;
     } catch (error) {
       this.logger.error(error.message);
       throw error;

@@ -11,6 +11,7 @@ type ContractType {
   Tenant: UserType!
   Total_rent: String!
   _id: ID!
+  createdAt: DateTime!
   isCurrent: Boolean!
 }
 
@@ -78,8 +79,8 @@ type Mutation {
   removeContract(removeContractInput: UpdateContractInput!): String!
   removeHouse(id: Int!): HouseType!
   removeUser(id: Int!): UserType!
-  signContract(updateContractInput: UpdateContractInput!): String!
-  tenantIn(updateContractInput: UpdateContractInput!): ContractType!
+  signContract(updateContractInput: UpdateContractInput!): ContractType!
+  tenantIn(updateContractInput: UpdateContractInput!): String!
   tenantOut(updateContractInput: UpdateContractInput!): String!
   updateHouse(updateHouseInput: UpdateHouseInput!): String!
   updatePassword(updatePasswordInput: UpdatePasswordInput!): String!

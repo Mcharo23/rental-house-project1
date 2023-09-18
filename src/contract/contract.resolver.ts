@@ -32,17 +32,17 @@ export class ContractResolver {
     return await this.contractService.findMany(context.req.user);
   }
 
-  @Mutation(() => String, { name: 'signContract' })
+  @Mutation(() => ContractType, { name: 'signContract' })
   async signContract(
     @Args('updateContractInput') updateContractInput: UpdateContractInput,
-  ): Promise<string> {
+  ): Promise<ContractType> {
     return await this.contractService.signContract(updateContractInput);
   }
 
-  @Mutation(() => ContractType, { name: 'tenantIn' })
+  @Mutation(() => String, { name: 'tenantIn' })
   tenantIn(
     @Args('updateContractInput') updateContractInput: UpdateContractInput,
-  ) {
+  ): Promise<string> {
     return this.contractService.tenantIn(updateContractInput);
   }
 
