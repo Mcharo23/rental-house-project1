@@ -125,7 +125,10 @@ export class ContractService {
           Tenant: Tenant._id,
         })
         .populate('Tenant', '', this.userModel)
-        .populate('House', '', this.houseModel)
+        .populate({
+          path: 'House',
+          populate: [{ path: 'user', model: 'User' }],
+        })
         .exec();
 
       if (contract.length === 0) {
@@ -224,21 +227,23 @@ export class ContractService {
       const contracts: Contract[] = [];
 
       contract.forEach((contract) => {
-        const startDate = contract.Date_of_contract;
+        const Date_of_contract = new Date(contract.Date_of_contract);
 
-        const currentDate = new Date();
-        const monthsDifference =
-          (currentDate.getFullYear() - startDate.getFullYear()) * 12 +
-          (currentDate.getMonth() - startDate.getMonth());
+        const End_of_contract = new Date(contract.End_of_contract);
+        const timeDifference =
+          End_of_contract.getTime() - Date_of_contract.getTime();
+        const daysDifference = Math.floor(timeDifference / (1000 * 3600 * 24));
 
-        if (monthsDifference <= 0 && contract.isCurrent) {
+        if (daysDifference >= 0 && contract.isCurrent) {
+          console.log(daysDifference);
+
           contracts.push(contract);
         }
       });
 
-      if (contracts.length === 0) {
-        throw new NotFoundException('No expired contracts');
-      }
+      // if (contracts.length === 0) {
+      //   throw new NotFoundException('No expired contracts');
+      // }
 
       return contracts;
     } catch (error) {

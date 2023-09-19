@@ -108,7 +108,7 @@ type Query {
   myHouse: [MyHouseType!]!
   user(username: String!): UserType!
   users: [UserType!]!
-  watchContract: [ContractType!]!
+  watchTenantContract: [ContractType!]!
 }
 
 input UpdateContractInput {

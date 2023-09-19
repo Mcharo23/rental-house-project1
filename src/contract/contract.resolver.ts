@@ -53,7 +53,7 @@ export class ContractResolver {
     return this.contractService.tenantOut(updateContractInput);
   }
 
-  @Query(() => [ContractType], { name: 'watchContract' })
+  @Query(() => [ContractType], { name: 'watchTenantContract' })
   async watchContract(@Context() context): Promise<ContractType[]> {
     return await this.contractService.watchContract(context.req.user);
   }
