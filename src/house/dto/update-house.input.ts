@@ -18,8 +18,4 @@ export class UpdateHouseInput {
   @IsNotEmpty({ message: 'Description should not be empty' })
   @Field()
   Description: string;
-
-  @IsNotEmpty({ message: 'Status should not be empty' })
-  @Field()
-  status: string;
 }

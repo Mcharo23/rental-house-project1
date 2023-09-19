@@ -30,8 +30,4 @@ export class CreateHouseInput {
   @IsArray()
   @Field(() => [String])
   imgUrl: string[];
-
-  @IsNotEmpty()
-  @Field()
-  status: string;
 }

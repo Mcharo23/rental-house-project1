@@ -29,7 +29,6 @@ input CreateHouseInput {
   imgUrl: [String!]!
   name: String!
   price: Float!
-  status: String!
 }
 
 input CreateUserInput {
@@ -121,7 +120,6 @@ input UpdateHouseInput {
   _id: ID!
   name: String!
   price: Float!
-  status: String!
 }
 
 input UpdatePasswordInput {

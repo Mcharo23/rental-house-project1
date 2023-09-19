@@ -11,6 +11,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { House } from './entities/house.schema';
 import { User } from 'src/users/entities/user.schema';
+import { HouseStatus } from 'src/lib/enum';
 
 @Injectable()
 export class HouseService {
@@ -36,6 +37,7 @@ export class HouseService {
         _id: houseId,
         ...createHouseInput,
         user: user,
+        status: HouseStatus.AVAILABLE,
       });
 
       await house.save();
@@ -152,7 +154,6 @@ export class HouseService {
         $set: {
           name: updateHouseInput.name,
           price: updateHouseInput.price,
-          status: updateHouseInput.status,
           Description: updateHouseInput.Description,
         },
       };

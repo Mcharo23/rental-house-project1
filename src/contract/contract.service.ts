@@ -200,9 +200,9 @@ export class ContractService {
         (endDate.getFullYear() - startDate.getFullYear()) * 12 +
         (endDate.getMonth() - startDate.getMonth());
 
-      if (monthsDifference > 0) {
-        throw new UnauthorizedException('You can not take tenant out');
-      }
+      // if (monthsDifference > 0) {
+      //   throw new UnauthorizedException('You can not take tenant out');
+      // }
 
       contract.isCurrent = false;
       contract.House.status = HouseStatus.AVAILABLE;
