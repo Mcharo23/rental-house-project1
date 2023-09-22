@@ -54,6 +54,14 @@ export class HouseService {
     }
   }
 
+  async insertImages(
+    file: Array<Express.Multer.File>,
+    user: User,
+  ): Promise<string> {
+    console.log(file);
+    return await 'success';
+  }
+
   async findAll() {
     try {
       const houses = await this.houseModel.find({}).populate('user', '').exec();

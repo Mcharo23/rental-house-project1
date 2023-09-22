@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { ContractService } from './contract.service';
-import { ContractType } from './entities/contract.entity';
+import { ContractType } from './entities/contract.objectType';
 import { CreateContractInput } from './dto/create-contract.input';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';

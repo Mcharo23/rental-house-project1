@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { HouseService } from './house.service';
-import { HouseType } from './entities/house.entity';
+import { HouseType, MyHouseType } from './entities/house.objectType';
 import { CreateHouseInput } from './dto/create-house.input';
 import { UpdateHouseInput } from './dto/update-house.input';
 import { Logger, UseGuards } from '@nestjs/common';
@@ -8,7 +8,6 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { UsersService } from 'src/users/users.service';
 import { House } from './entities/house.schema';
 import { Types } from 'mongoose';
-import { MyHouseType } from './entities/my-house.entity';
 
 @Resolver(() => HouseType)
 export class HouseResolver {
