@@ -15,7 +15,6 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { join } from 'path';
 import { readdirSync } from 'fs';
-import { url } from 'inspector';
 
 @Controller('house')
 export class HouseController {
